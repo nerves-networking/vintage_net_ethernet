@@ -9,5 +9,5 @@
   "makeup_elixir": {:hex, :makeup_elixir, "0.14.0", "cf8b7c66ad1cff4c14679698d532f0b5d45a3968ffbcbfd590339cb57742f1ae", [:mix], [{:makeup, "~> 1.0", [hex: :makeup, repo: "hexpm", optional: false]}], "hexpm"},
   "muontrap": {:hex, :muontrap, "0.5.0", "0b885a4095e990000d519441bccb8f037a9c4c35908720e7814a516a606be278", [:make, :mix], [{:elixir_make, "~> 0.6", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
   "nimble_parsec": {:hex, :nimble_parsec, "0.5.2", "1d71150d5293d703a9c38d4329da57d3935faed2031d64bc19e77b654ef2d177", [:mix], [], "hexpm"},
-  "vintage_net": {:git, "https://github.com/nerves-networking/vintage_net.git", "958179bd2ab6c8a4a5bc4875cc2bef0b7d71734f", [branch: "the-split"]},
+  "vintage_net": {:git, "https://github.com/nerves-networking/vintage_net.git", "679441932ae142d7fef9b648ed70437fb3bb295d", [branch: "the-split"]},
 }
