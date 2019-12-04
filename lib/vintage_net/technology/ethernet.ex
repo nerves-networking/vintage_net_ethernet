@@ -3,6 +3,7 @@ defmodule VintageNet.Technology.Ethernet do
 
   @moduledoc """
   Deprecated - Use VintageNetEthernet now
+
   This module will automatically redirect your configurations to VintageNetEthernet so
   no changes are needed to your code. New code should use the new module.
   """

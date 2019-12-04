@@ -6,15 +6,22 @@ defmodule VintageNetEthernet do
 
   @moduledoc """
   Support for common wired Ethernet interface configurations
-  Configurations for this technology are maps with a `:type` field set
-  to `VintageNetEthernet`. The following additional fields
-  are supported:
+
+  Configurations for this technology are maps with a `:type` field set to
+  `VintageNetEthernet`. The following additional fields are supported:
+
   * `:ipv4` - IPv4 options. See VintageNet.IP.IPv4Config.
+  * `:dhcpd` - DHCP daemon options if running a static IP configuration. See
+    VintageNet.IP.DhcpdConfig.
+
   An example DHCP configuration is:
+
   ```elixir
   %{type: VintageNetEthernet, ipv4: %{method: :dhcp}}
   ```
+
   An example static IP configuration is:
+
   ```elixir
   %{
     type: VintageNetEthernet,
@@ -24,13 +31,6 @@ defmodule VintageNetEthernet do
       prefix_length: 24,
       gateway: {192, 168, 0, 1}
     }
-  }
-  ```
-  * `:dhcpd` - DHCPD options. See VintageNet.IP.DhcpdConfig.
-  ```elixir
-  %{
-    type: VintageNetEthernet,
-    dhcpd: %{hostname: "nerves"}
   }
   ```
   """

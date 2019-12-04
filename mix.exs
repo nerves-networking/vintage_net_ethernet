@@ -35,7 +35,6 @@ defmodule VintageNetEthernet.MixProject do
         "lib",
         "test",
         "mix.exs",
-        "Makefile",
         "README.md",
         "LICENSE",
         "CHANGELOG.md"

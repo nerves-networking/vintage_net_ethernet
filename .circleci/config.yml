@@ -7,18 +7,21 @@ install_elixir: &install_elixir
       wget https://repo.hex.pm/builds/elixir/v$ELIXIR_VERSION.zip
       unzip -d /usr/local/elixir v$ELIXIR_VERSION.zip
       echo 'export PATH=/usr/local/elixir/bin:$PATH' >> $BASH_ENV
+
 install_hex_rebar: &install_hex_rebar
   run:
     name: Install hex and rebar
     command: |
       mix local.hex --force
       mix local.rebar --force
+
 install_system_deps: &install_system_deps
   run:
     name: Install system dependencies
     command: |
       apt update
       apt install -y unzip libmnl-dev libnl-genl-3-dev
+
 defaults: &defaults
   working_directory: ~/repo
 
