@@ -50,8 +50,7 @@ defmodule VintageNetEthernet.MixProject do
       {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.19", only: :docs, runtime: false},
       {:excoveralls, "~> 0.8", only: :test, runtime: false},
-      {:vintage_net, "~> 0.7.0-dev",
-       github: "nerves-networking/vintage_net", branch: "the-split", override: true}
+      {:vintage_net, "~> 0.7.0"}
     ]
   end
 
