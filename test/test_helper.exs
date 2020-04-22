@@ -18,6 +18,7 @@ defmodule Utils do
     )
   end
 
+  @spec udhcpc_child_spec(VintageNet.ifname(), String.t()) :: Supervisor.child_spec()
   def udhcpc_child_spec(ifname, hostname) do
     %{
       id: :udhcpc,
@@ -36,7 +37,7 @@ defmodule Utils do
              "-s",
              Application.app_dir(:vintage_net, ["priv", "udhcpc_handler"])
            ],
-           [stderr_to_stdout: true, log_output: :debug]
+           [stderr_to_stdout: true, log_output: :debug, log_prefix: "udhcpc(#{ifname}): "]
          ]},
       type: :worker
     }
