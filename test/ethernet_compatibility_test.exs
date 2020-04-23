@@ -27,6 +27,7 @@ defmodule EthernetCompatibilityTest do
       ifname: "eth0",
       type: VintageNetEthernet,
       source_config: normalized_input,
+      required_ifnames: ["eth0"],
       child_specs: [
         Utils.udhcpc_child_spec("eth0", "unit_test"),
         {VintageNet.Interface.InternetConnectivityChecker, "eth0"}

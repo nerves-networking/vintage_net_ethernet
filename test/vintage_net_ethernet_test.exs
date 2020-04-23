@@ -10,6 +10,7 @@ defmodule VintageNetEthernetTest do
       ifname: "eth0",
       type: Ethernet,
       source_config: input,
+      required_ifnames: ["eth0"],
       child_specs: [
         Utils.udhcpc_child_spec("eth0", "unit_test"),
         {VintageNet.Interface.InternetConnectivityChecker, "eth0"}
@@ -47,6 +48,7 @@ defmodule VintageNetEthernetTest do
           prefix_length: 24
         }
       },
+      required_ifnames: ["eth0"],
       child_specs: [{VintageNet.Interface.LANConnectivityChecker, "eth0"}],
       down_cmds: [
         {:fun, VintageNet.RouteManager, :clear_route, ["eth0"]},
@@ -94,6 +96,7 @@ defmodule VintageNetEthernetTest do
         },
         dhcpd: %{start: {192, 168, 24, 2}, end: {192, 168, 24, 100}}
       },
+      required_ifnames: ["eth0"],
       child_specs: [
         {VintageNet.Interface.LANConnectivityChecker, "eth0"},
         %{

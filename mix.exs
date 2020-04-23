@@ -54,7 +54,7 @@ defmodule VintageNetEthernet.MixProject do
 
   defp deps do
     [
-      {:vintage_net, "~> 0.7.9"},
+      {:vintage_net, "~> 0.8.0"},
       {:credo, "~> 1.2", only: :test, runtime: false},
       {:dialyxir, "~> 1.0.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.22", only: :docs, runtime: false},

@@ -49,7 +49,8 @@ defmodule VintageNetEthernet do
     %RawConfig{
       ifname: ifname,
       type: __MODULE__,
-      source_config: normalized_config
+      source_config: normalized_config,
+      required_ifnames: [ifname]
     }
     |> IPv4Config.add_config(normalized_config, opts)
     |> DhcpdConfig.add_config(normalized_config, opts)
