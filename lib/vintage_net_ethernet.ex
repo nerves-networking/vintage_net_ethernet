@@ -62,18 +62,8 @@ defmodule VintageNetEthernet do
   end
 
   @impl true
-  def check_system(opts) do
+  def check_system(_opts) do
     # TODO
-    with :ok <- check_program(opts[:bin_ifup]) do
-      :ok
-    end
-  end
-
-  defp check_program(path) do
-    if File.exists?(path) do
-      :ok
-    else
-      {:error, "Can't find #{path}"}
-    end
+    :ok
   end
 end
