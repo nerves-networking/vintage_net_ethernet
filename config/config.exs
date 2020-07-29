@@ -8,4 +8,5 @@ use Mix.Config
 config :vintage_net,
   udhcpc_handler: VintageNetTest.CapturingUdhcpcHandler,
   resolvconf: "/dev/null",
-  persistence_dir: "./test_tmp/persistence"
+  persistence_dir: "./test_tmp/persistence",
+  path: "#{File.cwd!()}/test/fixtures/root/bin"
