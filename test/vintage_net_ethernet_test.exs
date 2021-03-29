@@ -99,19 +99,7 @@ defmodule VintageNetEthernetTest do
       required_ifnames: ["eth0"],
       child_specs: [
         {VintageNet.Interface.LANConnectivityChecker, "eth0"},
-        %{
-          id: :udhcpd,
-          restart: :permanent,
-          shutdown: 500,
-          start:
-            {MuonTrap.Daemon, :start_link,
-             [
-               "udhcpd",
-               ["-f", "/tmp/vintage_net/udhcpd.conf.eth0"],
-               [stderr_to_stdout: true, log_output: :debug]
-             ]},
-          type: :worker
-        }
+        Utils.udhcpd_child_spec("eth0")
       ],
       files: [
         {"/tmp/vintage_net/udhcpd.conf.eth0",
@@ -119,7 +107,7 @@ defmodule VintageNetEthernetTest do
          interface eth0
          pidfile /tmp/vintage_net/udhcpd.eth0.pid
          lease_file /tmp/vintage_net/udhcpd.eth0.leases
-         notify_file #{Application.app_dir(:vintage_net, ["priv", "udhcpd_handler"])}
+         notify_file #{Application.app_dir(:beam_notify, ["priv", "beam_notify"])}
 
          end 192.168.24.100
          start 192.168.24.2

@@ -8,24 +8,56 @@ defmodule Utils do
 
   @spec udhcpc_child_spec(VintageNet.ifname(), String.t()) :: Supervisor.child_spec()
   def udhcpc_child_spec(ifname, hostname) do
+    beam_notify = Application.app_dir(:beam_notify, "priv/beam_notify")
+    env = BEAMNotify.env(name: "vintage_net_comm", report_env: true)
+
     %{
       id: :udhcpc,
+      start: {
+        VintageNet.Interface.IfupDaemon,
+        :start_link,
+        [
+          [
+            ifname: ifname,
+            command: "udhcpc",
+            args: [
+              "-f",
+              "-i",
+              ifname,
+              "-x",
+              "hostname:#{hostname}",
+              "-s",
+              beam_notify
+            ],
+            opts: [
+              stderr_to_stdout: true,
+              log_output: :debug,
+              log_prefix: "udhcpc(#{ifname}): ",
+              env: env
+            ]
+          ]
+        ]
+      }
+    }
+  end
+
+  @spec udhcpd_child_spec(VintageNet.ifname()) :: Supervisor.child_spec()
+  def udhcpd_child_spec(ifname) do
+    env = BEAMNotify.env(name: "vintage_net_comm", report_env: true)
+
+    %{
+      id: :udhcpd,
       restart: :permanent,
       shutdown: 500,
       start:
         {MuonTrap.Daemon, :start_link,
          [
-           "udhcpc",
+           "udhcpd",
            [
              "-f",
-             "-i",
-             ifname,
-             "-x",
-             "hostname:#{hostname}",
-             "-s",
-             Application.app_dir(:vintage_net, ["priv", "udhcpc_handler"])
+             "/tmp/vintage_net/udhcpd.conf.#{ifname}"
            ],
-           [stderr_to_stdout: true, log_output: :debug, log_prefix: "udhcpc(#{ifname}): "]
+           [stderr_to_stdout: true, log_output: :debug, env: env]
          ]},
       type: :worker
     }
