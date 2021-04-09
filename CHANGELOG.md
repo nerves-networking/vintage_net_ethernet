@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.10.0
+
+This release contains no code changes but it has been updated to use
+`vintage_net v0.10.0`. No changes to applications are needed.
+
 ## v0.9.0
 
 * New features
