@@ -35,14 +35,14 @@ defmodule VintageNetEthernet do
   ```
   """
 
-  @impl true
+  @impl VintageNet.Technology
   def normalize(%{type: __MODULE__} = config) do
     config
     |> IPv4Config.normalize()
     |> DhcpdConfig.normalize()
   end
 
-  @impl true
+  @impl VintageNet.Technology
   def to_raw_config(ifname, %{type: __MODULE__} = config, opts) do
     normalized_config = normalize(config)
 
@@ -56,12 +56,12 @@ defmodule VintageNetEthernet do
     |> DhcpdConfig.add_config(normalized_config, opts)
   end
 
-  @impl true
+  @impl VintageNet.Technology
   def ioctl(_ifname, _command, _args) do
     {:error, :unsupported}
   end
 
-  @impl true
+  @impl VintageNet.Technology
   def check_system(_opts) do
     # TODO
     :ok
