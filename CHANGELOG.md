@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.10.1
+
+* Bug fixes
+  * Fix new compiler warnings when built with Elixir 1.12
+
 ## v0.10.0
 
 This release contains no code changes but it has been updated to use
