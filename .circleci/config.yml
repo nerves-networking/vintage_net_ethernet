@@ -19,9 +19,9 @@ install_system_deps: &install_system_deps
         apk add build-base linux-headers libmnl-dev libnl3-dev git
 
 jobs:
-  build_elixir_1_11_otp_23:
+  build_elixir_1_12_otp_24:
     docker:
-      - image: hexpm/elixir:1.11.4-erlang-23.3-alpine-3.13.2
+      - image: hexpm/elixir:1.12.1-erlang-24.0-alpine-3.13.3
     <<: *defaults
     steps:
       - checkout
@@ -46,60 +46,44 @@ jobs:
             - _build
             - deps
 
-  build_elixir_1_10_otp_23:
+  build_elixir_1_11_otp_23:
     docker:
-      - image: hexpm/elixir:1.10.4-erlang-23.3-alpine-3.13.2
+      - image: hexpm/elixir:1.11.4-erlang-23.3.4-alpine-3.13.3
     <<: *defaults
     steps:
       - checkout
       - <<: *install_hex_rebar
       - <<: *install_system_deps
       - run: mix deps.get
-      - run: mix compile
+      - run: mix test
+
+  build_elixir_1_10_otp_23:
+    docker:
+      - image: hexpm/elixir:1.10.4-erlang-23.3.4-alpine-3.13.3
+    <<: *defaults
+    steps:
+      - checkout
+      - <<: *install_hex_rebar
+      - <<: *install_system_deps
+      - run: mix deps.get
       - run: mix test
 
   build_elixir_1_9_otp_22:
     docker:
-      - image: hexpm/elixir:1.9.4-erlang-22.3.4.9-alpine-3.13.1
+      - image: hexpm/elixir:1.9.4-erlang-22.3.4.18-alpine-3.13.3
     <<: *defaults
     steps:
       - checkout
       - <<: *install_hex_rebar
       - <<: *install_system_deps
       - run: mix deps.get
-      - run: mix compile
-      - run: mix test
-
-  build_elixir_1_8_otp_22:
-    docker:
-      - image: hexpm/elixir:1.8.2-erlang-22.3.4.9-alpine-3.13.1
-    <<: *defaults
-    steps:
-      - checkout
-      - <<: *install_hex_rebar
-      - <<: *install_system_deps
-      - run: mix deps.get
-      - run: mix compile
-      - run: mix test
-
-  build_elixir_1_7_otp_21:
-    docker:
-      - image: hexpm/elixir:1.7.4-erlang-21.3.8.15-alpine-3.12.0
-    <<: *defaults
-    steps:
-      - checkout
-      - <<: *install_hex_rebar
-      - <<: *install_system_deps
-      - run: mix deps.get
-      - run: mix compile
       - run: mix test
 
 workflows:
   version: 2
   build_test:
     jobs:
+      - build_elixir_1_12_otp_24
       - build_elixir_1_11_otp_23
       - build_elixir_1_10_otp_23
       - build_elixir_1_9_otp_22
-      - build_elixir_1_8_otp_22
-      - build_elixir_1_7_otp_21
