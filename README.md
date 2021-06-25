@@ -87,6 +87,32 @@ Wired Ethernet connections are monitored for Internet connectivity if a default
 gateway is available. When internet-connected, they are preferred over all other
 network technologies even when the others provide default gateways.
 
+## Setting the MAC address
+
+On some devices, you'll get a random Ethernet MAC address by default and need to
+read a real MAC address out of an EEPROM. VintageNet can help with this by
+calling a function to read the MAC address at the right time. You can also force
+a MAC address if a configuration if you want to allow users to change it on the
+fly.
+
+Here's an example where the MAC address is set via a callback function:
+
+```elixir
+   {"eth0",
+      %{
+        type: VintageNetEthernet,
+        mac_address: {MyMacAddressReader, :read, []},
+        ipv4: %{method: :dhcp}
+      }}
+```
+
+`MyMacAddress.read/0` is expected to return a string of the form
+`"11:22:33:44:55:66"`. Any other return value or raising an exception will cause
+VintageNet to skip setting the MAC address.
+
+Instead of supplying an MFA tuple, you can specify a string for the
+`:mac_address` key.
+
 ## Properties
 
 There are no wired Ethernet-specific properties. See `vintage_net` for the

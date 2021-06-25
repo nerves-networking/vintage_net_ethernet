@@ -1,5 +1,7 @@
 defmodule VintageNetEthernetTest do
   use ExUnit.Case
+  import ExUnit.CaptureLog
+
   alias VintageNet.Interface.RawConfig
   alias VintageNetEthernet, as: Ethernet
 
@@ -23,6 +25,120 @@ defmodule VintageNetEthernetTest do
     }
 
     assert output == Ethernet.to_raw_config("eth0", input, Utils.default_opts())
+  end
+
+  test "create a wired ethernet configuration with custom mac address" do
+    input = %{
+      type: Ethernet,
+      mac_address: "11:22:33:44:55:66",
+      ipv4: %{method: :dhcp},
+      hostname: "unit_test"
+    }
+
+    output = %RawConfig{
+      ifname: "eth0",
+      type: Ethernet,
+      source_config: input,
+      required_ifnames: ["eth0"],
+      child_specs: [
+        Utils.udhcpc_child_spec("eth0", "unit_test"),
+        {VintageNet.Interface.InternetConnectivityChecker, "eth0"}
+      ],
+      down_cmds: [
+        {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
+        {:run, "ip", ["link", "set", "eth0", "down"]}
+      ],
+      up_cmds: [
+        {:run, "ip", ["link", "set", "eth0", "address", "11:22:33:44:55:66"]},
+        {:run, "ip", ["link", "set", "eth0", "up"]}
+      ]
+    }
+
+    assert output == Ethernet.to_raw_config("eth0", input, Utils.default_opts())
+  end
+
+  test "raises on invalid MAC address" do
+    assert_raise ArgumentError, fn ->
+      Ethernet.normalize(%{type: Ethernet, mac_address: "11:22:33"})
+    end
+
+    assert_raise ArgumentError, fn ->
+      Ethernet.normalize(%{type: Ethernet, mac_address: :bad_mac})
+    end
+  end
+
+  test "create a wired ethernet configuration with custom mac address function" do
+    input = %{
+      type: Ethernet,
+      mac_address: {__MODULE__, :return_a_mac, []},
+      ipv4: %{method: :dhcp},
+      hostname: "unit_test"
+    }
+
+    output = %RawConfig{
+      ifname: "eth0",
+      type: Ethernet,
+      source_config: input,
+      required_ifnames: ["eth0"],
+      child_specs: [
+        Utils.udhcpc_child_spec("eth0", "unit_test"),
+        {VintageNet.Interface.InternetConnectivityChecker, "eth0"}
+      ],
+      down_cmds: [
+        {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
+        {:run, "ip", ["link", "set", "eth0", "down"]}
+      ],
+      up_cmds: [
+        {:run, "ip", ["link", "set", "eth0", "address", "12:34:56:78:9a:bc"]},
+        {:run, "ip", ["link", "set", "eth0", "up"]}
+      ]
+    }
+
+    assert output == Ethernet.to_raw_config("eth0", input, Utils.default_opts())
+  end
+
+  @doc false
+  def return_a_mac() do
+    "12:34:56:78:9a:bc"
+  end
+
+  test "ignores crashing custom mac address functions" do
+    input = %{
+      type: Ethernet,
+      mac_address: {__MODULE__, :crash_a_mac, []},
+      ipv4: %{method: :dhcp},
+      hostname: "unit_test"
+    }
+
+    output = %RawConfig{
+      ifname: "eth0",
+      type: Ethernet,
+      source_config: input,
+      required_ifnames: ["eth0"],
+      child_specs: [
+        Utils.udhcpc_child_spec("eth0", "unit_test"),
+        {VintageNet.Interface.InternetConnectivityChecker, "eth0"}
+      ],
+      down_cmds: [
+        {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
+        {:run, "ip", ["link", "set", "eth0", "down"]}
+      ],
+      up_cmds: [
+        {:run, "ip", ["link", "set", "eth0", "up"]}
+      ]
+    }
+
+    logs =
+      capture_log(fn ->
+        assert output == Ethernet.to_raw_config("eth0", input, Utils.default_opts())
+      end)
+
+    assert logs =~ "ignoring invalid MAC address"
+  end
+
+  @doc false
+  def crash_a_mac() do
+    raise RuntimeError, "crash_a_mac"
   end
 
   test "create a wired ethernet configuration with static IP" do
