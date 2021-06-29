@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.10.2
+
+* New features
+  * Support setting the MAC address via either a string or an MFA that will be
+    called to read the MAC address. See the `:mac_address` parameter.
+
 ## v0.10.1
 
 * Bug fixes
