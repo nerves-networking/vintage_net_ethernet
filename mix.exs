@@ -40,12 +40,11 @@ defmodule VintageNetEthernet.MixProject do
   defp package do
     %{
       files: [
+        "CHANGELOG.md",
         "lib",
-        "test",
         "mix.exs",
         "README.md",
-        "LICENSE",
-        "CHANGELOG.md"
+        "LICENSE"
       ],
       licenses: ["Apache-2.0"],
       links: %{"GitHub" => @source_url}
