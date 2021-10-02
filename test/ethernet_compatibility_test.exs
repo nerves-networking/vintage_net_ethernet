@@ -30,7 +30,7 @@ defmodule EthernetCompatibilityTest do
       required_ifnames: ["eth0"],
       child_specs: [
         Utils.udhcpc_child_spec("eth0", "unit_test"),
-        {VintageNet.Interface.InternetConnectivityChecker, "eth0"}
+        {VintageNet.Connectivity.InternetChecker, "eth0"}
       ],
       down_cmds: [
         {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
