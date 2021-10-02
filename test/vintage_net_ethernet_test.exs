@@ -15,7 +15,7 @@ defmodule VintageNetEthernetTest do
       required_ifnames: ["eth0"],
       child_specs: [
         Utils.udhcpc_child_spec("eth0", "unit_test"),
-        {VintageNet.Interface.InternetConnectivityChecker, "eth0"}
+        {VintageNet.Connectivity.InternetChecker, "eth0"}
       ],
       down_cmds: [
         {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
@@ -42,7 +42,7 @@ defmodule VintageNetEthernetTest do
       required_ifnames: ["eth0"],
       child_specs: [
         Utils.udhcpc_child_spec("eth0", "unit_test"),
-        {VintageNet.Interface.InternetConnectivityChecker, "eth0"}
+        {VintageNet.Connectivity.InternetChecker, "eth0"}
       ],
       down_cmds: [
         {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
@@ -82,7 +82,7 @@ defmodule VintageNetEthernetTest do
       required_ifnames: ["eth0"],
       child_specs: [
         Utils.udhcpc_child_spec("eth0", "unit_test"),
-        {VintageNet.Interface.InternetConnectivityChecker, "eth0"}
+        {VintageNet.Connectivity.InternetChecker, "eth0"}
       ],
       down_cmds: [
         {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
@@ -117,7 +117,7 @@ defmodule VintageNetEthernetTest do
       required_ifnames: ["eth0"],
       child_specs: [
         Utils.udhcpc_child_spec("eth0", "unit_test"),
-        {VintageNet.Interface.InternetConnectivityChecker, "eth0"}
+        {VintageNet.Connectivity.InternetChecker, "eth0"}
       ],
       down_cmds: [
         {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
@@ -165,7 +165,7 @@ defmodule VintageNetEthernetTest do
         }
       },
       required_ifnames: ["eth0"],
-      child_specs: [{VintageNet.Interface.LANConnectivityChecker, "eth0"}],
+      child_specs: [{VintageNet.Connectivity.LANChecker, "eth0"}],
       down_cmds: [
         {:fun, VintageNet.RouteManager, :clear_route, ["eth0"]},
         {:fun, VintageNet.NameResolver, :clear, ["eth0"]},
@@ -214,7 +214,7 @@ defmodule VintageNetEthernetTest do
       },
       required_ifnames: ["eth0"],
       child_specs: [
-        {VintageNet.Interface.LANConnectivityChecker, "eth0"},
+        {VintageNet.Connectivity.LANChecker, "eth0"},
         Utils.udhcpd_child_spec("eth0")
       ],
       files: [
