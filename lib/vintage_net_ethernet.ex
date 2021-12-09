@@ -5,6 +5,7 @@ defmodule VintageNetEthernet do
 
   alias VintageNet.Interface.RawConfig
   alias VintageNet.IP.{DhcpdConfig, IPv4Config}
+  alias VintageNetEthernet.Cookbook
   alias VintageNetEthernet.MacAddress
 
   @moduledoc """
@@ -114,5 +115,12 @@ defmodule VintageNetEthernet do
   def check_system(_opts) do
     # TODO
     :ok
+  end
+
+  @spec quick_configure(VintageNet.ifname()) :: :ok | {:error, term()}
+  def quick_configure(ifname \\ "eth0") do
+    with {:ok, config} <- Cookbook.dynamic_ipv4() do
+      VintageNet.configure(ifname, config)
+    end
   end
 end
