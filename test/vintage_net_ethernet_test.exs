@@ -98,6 +98,7 @@ defmodule VintageNetEthernetTest do
   end
 
   @doc false
+  @spec return_a_mac() :: String.t()
   def return_a_mac() do
     "12:34:56:78:9a:bc"
   end
@@ -137,6 +138,7 @@ defmodule VintageNetEthernetTest do
   end
 
   @doc false
+  @spec crash_a_mac() :: no_return()
   def crash_a_mac() do
     raise RuntimeError, "crash_a_mac"
   end

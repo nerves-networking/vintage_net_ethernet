@@ -1,13 +1,4 @@
 defmodule VintageNetEthernet do
-  @behaviour VintageNet.Technology
-
-  require Logger
-
-  alias VintageNet.Interface.RawConfig
-  alias VintageNet.IP.{DhcpdConfig, IPv4Config}
-  alias VintageNetEthernet.Cookbook
-  alias VintageNetEthernet.MacAddress
-
   @moduledoc """
   Support for common wired Ethernet interface configurations
 
@@ -42,6 +33,14 @@ defmodule VintageNetEthernet do
   }
   ```
   """
+  @behaviour VintageNet.Technology
+
+  alias VintageNet.Interface.RawConfig
+  alias VintageNet.IP.{DhcpdConfig, IPv4Config}
+  alias VintageNetEthernet.Cookbook
+  alias VintageNetEthernet.MacAddress
+
+  require Logger
 
   @impl VintageNet.Technology
   def normalize(%{type: __MODULE__} = config) do
