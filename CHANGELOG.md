@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.11.0 - 2022-04-30
+
+This release requires Elixir 1.11 or later and VintageNet 0.12.0.
+
+* Changes
+  * Add `VintageNetEthernet.quick_configure` to easily setup a wired Ethernet
+    network that uses dynamic addressing.
+
 ## v0.10.3
 
 * Changes
