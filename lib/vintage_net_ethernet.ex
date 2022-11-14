@@ -8,10 +8,10 @@ defmodule VintageNetEthernet do
   * `:ipv4` - IPv4 options. See VintageNet.IP.IPv4Config.
   * `:dhcpd` - DHCP daemon options if running a static IP configuration. See
     VintageNet.IP.DhcpdConfig.
-  * `:mac_address` - A MAC address string or an MFA tuple. VintageNet will set
-    the MAC address of the network interface to the value specified. If an MFA
-    tuple is passed, VintageNet will `apply` it and use the return value as the
-    address.
+  * `:mac_address` - A MAC address string or an MFArgs tuple. VintageNet will
+    set the MAC address of the network interface to the value specified. If an
+    MFArgs tuple is passed, VintageNet will `apply` it and use the return value
+    as the address.
 
   An example DHCP configuration is:
 
@@ -51,7 +51,7 @@ defmodule VintageNetEthernet do
   end
 
   defp normalize_mac_address(%{mac_address: mac_address} = config) do
-    if MacAddress.valid?(mac_address) or mfa?(mac_address) do
+    if MacAddress.valid?(mac_address) or mfargs?(mac_address) do
       config
     else
       raise ArgumentError, "Invalid MAC address #{inspect(mac_address)}"
@@ -60,8 +60,8 @@ defmodule VintageNetEthernet do
 
   defp normalize_mac_address(config), do: config
 
-  defp mfa?({m, f, a}) when is_atom(m) and is_atom(f) and is_list(a), do: true
-  defp mfa?(_), do: false
+  defp mfargs?({m, f, a}) when is_atom(m) and is_atom(f) and is_list(a), do: true
+  defp mfargs?(_), do: false
 
   @impl VintageNet.Technology
   def to_raw_config(ifname, %{type: __MODULE__} = config, opts) do
@@ -97,8 +97,8 @@ defmodule VintageNetEthernet do
     raw_config
   end
 
-  defp resolve_mac({m, f, a}) do
-    apply(m, f, a)
+  defp resolve_mac({m, f, args}) do
+    apply(m, f, args)
   rescue
     e -> {:error, e}
   end

@@ -110,7 +110,7 @@ Here's an example where the MAC address is set via a callback function:
 `"11:22:33:44:55:66"`. Any other return value or raising an exception will cause
 VintageNet to skip setting the MAC address.
 
-Instead of supplying an MFA tuple, you can specify a string for the
+Instead of supplying an MFArgs tuple, you can specify a string for the
 `:mac_address` key.
 
 ## Properties
