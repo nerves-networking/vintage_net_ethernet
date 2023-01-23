@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.11.1 - 2023-01-23
+
+* Changes
+  * Support VintageNet v0.13.0
+  * Various minor documentation updates
+
 ## v0.11.0 - 2022-04-30
 
 This release requires Elixir 1.11 or later and VintageNet 0.12.0.
