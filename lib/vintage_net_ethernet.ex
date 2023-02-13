@@ -88,7 +88,10 @@ defmodule VintageNetEthernet do
 
       %{raw_config | up_cmds: new_up_cmds}
     else
-      Logger.warn("vintage_net_ethernet: ignoring invalid MAC address '#{inspect(resolved_mac)}'")
+      Logger.warning(
+        "vintage_net_ethernet: ignoring invalid MAC address '#{inspect(resolved_mac)}'"
+      )
+
       raw_config
     end
   end
