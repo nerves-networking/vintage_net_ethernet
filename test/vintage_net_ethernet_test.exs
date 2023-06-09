@@ -176,7 +176,18 @@ defmodule VintageNetEthernetTest do
       ],
       up_cmds: [
         {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
-        {:run, "ip", ["addr", "add", "192.168.0.2/24", "dev", "eth0", "label", "eth0"]},
+        {:run, "ip",
+         [
+           "addr",
+           "add",
+           "192.168.0.2/24",
+           "dev",
+           "eth0",
+           "broadcast",
+           "192.168.0.255",
+           "label",
+           "eth0"
+         ]},
         {:run, "ip", ["link", "set", "eth0", "up"]},
         {:fun, VintageNet.RouteManager, :clear_route, ["eth0"]},
         {:fun, VintageNet.NameResolver, :clear, ["eth0"]}
@@ -200,6 +211,19 @@ defmodule VintageNetEthernetTest do
       },
       hostname: "unit_test"
     }
+
+    expected_dhcpd =
+      if String.to_integer(System.otp_release()) > 25 do
+        """
+        start 192.168.24.2
+        end 192.168.24.100
+        """
+      else
+        """
+        end 192.168.24.100
+        start 192.168.24.2
+        """
+      end
 
     output = %RawConfig{
       type: Ethernet,
@@ -227,9 +251,7 @@ defmodule VintageNetEthernetTest do
          lease_file /tmp/vintage_net/udhcpd.eth0.leases
          notify_file #{Application.app_dir(:beam_notify, ["priv", "beam_notify"])}
 
-         end 192.168.24.100
-         start 192.168.24.2
-
+         #{expected_dhcpd}
          """}
       ],
       down_cmds: [
@@ -240,7 +262,18 @@ defmodule VintageNetEthernetTest do
       ],
       up_cmds: [
         {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
-        {:run, "ip", ["addr", "add", "192.168.24.1/24", "dev", "eth0", "label", "eth0"]},
+        {:run, "ip",
+         [
+           "addr",
+           "add",
+           "192.168.24.1/24",
+           "dev",
+           "eth0",
+           "broadcast",
+           "192.168.24.255",
+           "label",
+           "eth0"
+         ]},
         {:run, "ip", ["link", "set", "eth0", "up"]},
         {:fun, VintageNet.RouteManager, :clear_route, ["eth0"]},
         {:fun, VintageNet.NameResolver, :clear, ["eth0"]}
