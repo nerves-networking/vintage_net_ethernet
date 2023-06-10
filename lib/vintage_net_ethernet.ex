@@ -82,9 +82,19 @@ defmodule VintageNetEthernet do
     resolved_mac = resolve_mac(mac_address)
 
     if MacAddress.valid?(resolved_mac) do
+      # The :run_ignore_errors is done instead of :run so that if the MAC
+      # address can't be set that the system continues to work. Reasons for it
+      # not to be set include that the MAC address was set in a previous run
+      # and the interface is busy. Toggling the interface down will fix this,
+      # but seems harsh when the times that this has been noticed, everything
+      # was ok and if "ip link" could tell that the command was a no-op and
+      # return 0, no one would have noticed.
       new_up_cmds =
         raw_config.up_cmds ++
-          [{:run, "ip", ["link", "set", raw_config.ifname, "address", resolved_mac]}]
+          [
+            {:run_ignore_errors, "ip",
+             ["link", "set", raw_config.ifname, "address", resolved_mac]}
+          ]
 
       %{raw_config | up_cmds: new_up_cmds}
     else
