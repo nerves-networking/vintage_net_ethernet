@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.11.2 - 2023-06-10
+
+* Changes
+  * Fix Elixir 1.15 deprecation warning
+
 ## v0.11.1 - 2023-01-23
 
 * Changes
