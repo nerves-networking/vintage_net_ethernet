@@ -176,7 +176,18 @@ defmodule VintageNetEthernetTest do
       ],
       up_cmds: [
         {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
-        {:run, "ip", ["addr", "add", "192.168.0.2/24", "dev", "eth0", "label", "eth0"]},
+        {:run, "ip",
+         [
+           "addr",
+           "add",
+           "192.168.0.2/24",
+           "dev",
+           "eth0",
+           "broadcast",
+           "192.168.0.255",
+           "label",
+           "eth0"
+         ]},
         {:run, "ip", ["link", "set", "eth0", "up"]},
         {:fun, VintageNet.RouteManager, :clear_route, ["eth0"]},
         {:fun, VintageNet.NameResolver, :clear, ["eth0"]}
@@ -240,7 +251,18 @@ defmodule VintageNetEthernetTest do
       ],
       up_cmds: [
         {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
-        {:run, "ip", ["addr", "add", "192.168.24.1/24", "dev", "eth0", "label", "eth0"]},
+        {:run, "ip",
+         [
+           "addr",
+           "add",
+           "192.168.24.1/24",
+           "dev",
+           "eth0",
+           "broadcast",
+           "192.168.24.255",
+           "label",
+           "eth0"
+         ]},
         {:run, "ip", ["link", "set", "eth0", "up"]},
         {:fun, VintageNet.RouteManager, :clear_route, ["eth0"]},
         {:fun, VintageNet.NameResolver, :clear, ["eth0"]}
