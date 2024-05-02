@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+* Changes
+  * Support wired IEEE 802.1X and MACsec with the `:vintage_net_ethernet`
+    option. This requires the optional `vintage_net_supplicant` dependency.
+  * Support private keys in an HSM for IEEE 802.1X with the
+    `:pkcs11_engine_path`, `:pkcs11_module_path` and `:pin` options, and
+    checking the authentication server's name with `:domain_suffix_match`.
+
 ## v0.11.2 - 2023-06-10
 
 * Changes
