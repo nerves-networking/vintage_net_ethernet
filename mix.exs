@@ -8,7 +8,7 @@ defmodule VintageNetEthernet.MixProject do
     [
       app: :vintage_net_ethernet,
       version: @version,
-      elixir: "~> 1.11",
+      elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       dialyzer: dialyzer(),
