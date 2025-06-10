@@ -14,13 +14,7 @@ defmodule VintageNetEthernet.MixProject do
       dialyzer: dialyzer(),
       docs: docs(),
       package: package(),
-      description: description(),
-      preferred_cli_env: %{
-        docs: :docs,
-        "hex.publish": :docs,
-        "hex.build": :docs,
-        credo: :test
-      }
+      description: description()
     ]
   end
 
@@ -32,6 +26,10 @@ defmodule VintageNetEthernet.MixProject do
 
   defp description do
     "Ethernet networking for VintageNet"
+  end
+
+  def cli do
+    [preferred_envs: %{docs: :docs, "hex.publish": :docs, "hex.build": :docs, credo: :test}]
   end
 
   defp package do
