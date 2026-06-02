@@ -1,7 +1,7 @@
 ![vintage net logo](assets/logo.png)
 
 [![Hex version](https://img.shields.io/hexpm/v/vintage_net_ethernet.svg "Hex version")](https://hex.pm/packages/vintage_net_ethernet)
-[![API docs](https://img.shields.io/hexpm/v/vintage_net_ethernet.svg?label=hexdocs "API docs")](https://hexdocs.pm/vintage_net_ethernet/VintageNetEthernet.html)
+[![API docs](https://img.shields.io/hexpm/v/vintage_net_ethernet.svg?label=hexdocs "API docs")](https://vintage-net-ethernet.hexdocs.pm/VintageNetEthernet.html)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/nerves-networking/vintage_net_ethernet/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/nerves-networking/vintage_net_ethernet/tree/main)
 [![REUSE status](https://api.reuse.software/badge/github.com/nerves-networking/vintage_net_ethernet)](https://api.reuse.software/info/github.com/nerves-networking/vintage_net_ethernet)
 
