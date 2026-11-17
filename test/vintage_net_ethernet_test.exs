@@ -33,6 +33,183 @@ defmodule VintageNetEthernetTest do
     assert output == Ethernet.to_raw_config("eth0", input, Utils.default_opts())
   end
 
+  test "create an IEEE 802.1X configuration" do
+    input = %{
+      type: Ethernet,
+      vintage_net_ethernet: %{
+        key_mgmt: :IEEE8021X,
+        eap: "PEAP",
+        identity: "user",
+        password: "password",
+        phase2: "auth=MSCHAPV2"
+      },
+      ipv4: %{method: :dhcp},
+      hostname: "unit_test"
+    }
+
+    output = %RawConfig{
+      ifname: "eth0",
+      type: Ethernet,
+      source_config: input,
+      required_ifnames: ["eth0"],
+      restart_strategy: :rest_for_one,
+      files: [
+        {"/tmp/vintage_net/wpa_supplicant.conf.eth0",
+         """
+         ctrl_interface=/tmp/vintage_net/wpa_supplicant
+         network={
+         key_mgmt=IEEE8021X
+         eap=PEAP
+         identity="user"
+         password="password"
+         phase2="auth=MSCHAPV2"
+         }
+         """}
+      ],
+      cleanup_files: ["/tmp/vintage_net/wpa_supplicant/eth0"],
+      child_specs: [
+        {VintageNetSupplicant.WPASupplicant,
+         [
+           wpa_supplicant: "wpa_supplicant",
+           ifname: "eth0",
+           driver: "wired",
+           wpa_supplicant_conf_path: "/tmp/vintage_net/wpa_supplicant.conf.eth0",
+           control_path: "/tmp/vintage_net/wpa_supplicant",
+           verbose: false
+         ]},
+        Utils.udhcpc_child_spec("eth0", "unit_test"),
+        {VintageNet.Connectivity.InternetChecker, "eth0"}
+      ],
+      down_cmds: [
+        {:run_ignore_errors, "ip", ["addr", "flush", "dev", "eth0", "label", "eth0"]},
+        {:run, "ip", ["link", "set", "eth0", "down"]}
+      ],
+      up_cmds: [{:run, "ip", ["link", "set", "eth0", "up"]}]
+    }
+
+    assert output == Ethernet.to_raw_config("eth0", input, Utils.default_opts())
+  end
+
+  defp supplicant_conf(ethernet) do
+    input = %{type: Ethernet, vintage_net_ethernet: ethernet, ipv4: %{method: :dhcp}}
+    [{_path, contents}] = Ethernet.to_raw_config("eth0", input, Utils.default_opts()).files
+    contents
+  end
+
+  test "create an EAP-TLS configuration" do
+    assert supplicant_conf(%{
+             key_mgmt: :IEEE8021X,
+             eap: "TLS",
+             identity: "host/device.example.com",
+             ca_cert: "/data/ca.pem",
+             client_cert: "/data/cert.pem",
+             private_key: "/data/key.pem",
+             private_key_passwd: "it's a \"secret\"",
+             eapol_flags: 0
+           }) == """
+           ctrl_interface=/tmp/vintage_net/wpa_supplicant
+           network={
+           key_mgmt=IEEE8021X
+           eap=TLS
+           identity="host/device.example.com"
+           eapol_flags=0
+           ca_cert="/data/ca.pem"
+           client_cert="/data/cert.pem"
+           private_key="/data/key.pem"
+           private_key_passwd="it's a \\"secret\\""
+           }
+           """
+  end
+
+  test "create an EAP-TLS configuration with the key in an HSM" do
+    assert supplicant_conf(%{
+             pkcs11_engine_path: "/usr/lib/engines-3/libpkcs11.so",
+             pkcs11_module_path: "/srv/erlang/lib/nerves_key_pkcs11-1.2.0/priv/nerves_key_pkcs11.so",
+             key_mgmt: :IEEE8021X,
+             eap: "TLS",
+             identity: "host/device.example.com",
+             ca_cert: "/data/ca.pem",
+             domain_suffix_match: "radius.example.com",
+             client_cert: "/data/cert.pem",
+             private_key: "pkcs11:token=1",
+             pin: "1234"
+           }) == """
+           ctrl_interface=/tmp/vintage_net/wpa_supplicant
+           pkcs11_engine_path=/usr/lib/engines-3/libpkcs11.so
+           pkcs11_module_path=/srv/erlang/lib/nerves_key_pkcs11-1.2.0/priv/nerves_key_pkcs11.so
+           network={
+           key_mgmt=IEEE8021X
+           eap=TLS
+           identity="host/device.example.com"
+           domain_suffix_match="radius.example.com"
+           ca_cert="/data/ca.pem"
+           client_cert="/data/cert.pem"
+           private_key="pkcs11:token=1"
+           pin="1234"
+           }
+           """
+  end
+
+  test "create a MACsec PSK configuration" do
+    assert supplicant_conf(%{
+             key_mgmt: :none,
+             eapol_flags: 0,
+             macsec_policy: 1,
+             mka_cak: "0123456789ABCDEF0123456789ABCDEF",
+             mka_ckn: "6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435",
+             mka_priority: 128
+           }) == """
+           ctrl_interface=/tmp/vintage_net/wpa_supplicant
+           network={
+           key_mgmt=NONE
+           eapol_flags=0
+           macsec_policy=1
+           mka_cak=0123456789ABCDEF0123456789ABCDEF
+           mka_ckn=6162636465666768696A6B6C6D6E6F707172737475767778797A303132333435
+           mka_priority=128
+           }
+           """
+  end
+
+  test "WiFi-only options are ignored" do
+    assert supplicant_conf(%{key_mgmt: :IEEE8021X, eap: "TLS", ssid: "nope", psk: "nope"}) == """
+           ctrl_interface=/tmp/vintage_net/wpa_supplicant
+           network={
+           key_mgmt=IEEE8021X
+           eap=TLS
+           }
+           """
+  end
+
+  test "create a configuration with a raw wpa_supplicant.conf" do
+    conf = """
+    ap_scan=0
+    network={
+    key_mgmt=IEEE8021X
+    eap=TLS
+    }
+    """
+
+    input = %{
+      type: Ethernet,
+      vintage_net_ethernet: %{wpa_supplicant_conf: conf},
+      verbose: true,
+      ipv4: %{method: :dhcp},
+      hostname: "unit_test"
+    }
+
+    raw_config = Ethernet.to_raw_config("eth0", input, Utils.default_opts())
+
+    assert raw_config.files == [
+             {"/tmp/vintage_net/wpa_supplicant.conf.eth0",
+              "ctrl_interface=/tmp/vintage_net/wpa_supplicant\n" <> conf}
+           ]
+
+    assert {VintageNetSupplicant.WPASupplicant, options} = hd(raw_config.child_specs)
+    assert options[:driver] == "wired"
+    assert options[:verbose] == true
+  end
+
   test "create a wired ethernet configuration with custom mac address" do
     input = %{
       type: Ethernet,
