@@ -23,6 +23,44 @@ def deps do
 end
 ```
 
+### Igniter
+
+If your project uses [Igniter](https://hex.pm/packages/igniter),
+`VintageNetEthernet` can be added along with a network configuration for the
+`"eth0"` interface that uses DHCP by running:
+
+```sh
+mix igniter.install vintage_net_ethernet
+```
+
+The configuration is written to `config/target.exs`. VintageNet's base
+configuration is added if it's missing. If the interface is already configured,
+it's left as it is.
+
+If other dependencies in your `mix.exs` are restricted to devices with a module
+attribute like `targets: @all_targets`, the `:vintage_net_ethernet` dependency
+gets the same option.
+
+Options:
+
+* `--ethernet-ifname` - the name of the Ethernet interface. Defaults to `eth0`.
+* `--ethernet-address` - a static IPv4 address to use instead of DHCP. Either
+  append the prefix length like `192.168.9.232/24` or pass `--ethernet-netmask`.
+* `--ethernet-netmask` - the subnet mask for the static IPv4 address. E.g.,
+  `255.255.255.0`
+* `--ethernet-gateway` - the default gateway for the static IPv4 configuration
+* `--ethernet-name-servers` - a comma-separated list of name servers for the
+  static IPv4 configuration
+
+For example, here's how to add a second Ethernet interface with a static IP
+address:
+
+```sh
+mix igniter.install vintage_net_ethernet --ethernet-ifname eth1 \
+  --ethernet-address 192.168.9.232/24 --ethernet-gateway 192.168.9.1 \
+  --ethernet-name-servers 1.1.1.1,8.8.8.8
+```
+
 ## Using
 
 Wired Ethernet interfaces typically have names like `"eth0"`, `"eth1"`, etc.
